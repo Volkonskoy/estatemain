@@ -19,7 +19,7 @@ export default function Card(
             <div
             className="h-[180px] sm:h-[220px] lg:h-[240px] w-full bg-cover bg-center"
             style={{ backgroundImage: 
-                `url('http://localhost:8080/images/${imageUrls[0]}')` }}
+                `url('https://osfinanzen.com/api/images/${imageUrls[0]}')` }}
             >
             </div>
 
@@ -28,7 +28,7 @@ export default function Card(
                 <h2 className="font-bold text-lg sm:text-xl text-gray-800 mb-2">
                     {title}
                 </h2>
-                <p className="text-gray-600 mb-4 text-sm">{description}</p>
+                <p className="text-gray-600 mb-4 text-sm hidden">{description}</p>
 
                 {/* Сетка параметров */}
                 <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
@@ -57,7 +57,7 @@ export default function Card(
                     <span className="text-gray-700 font-medium">{t("detailscardprofit")}</span>
                     </div>
                     <div className="text-blue-600 font-semibold">
-                        {`${profitMin}-${profitMax}% ${t("detailscardprofitlabel")}`}
+                        <ProfitDesc profitMin={profitMin} profitMax={profitMax}/>
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -65,7 +65,7 @@ export default function Card(
                     <span className="text-gray-700 font-medium">{t("detailscardtime")}</span>
                     </div>
                     <div className="text-gray-900 font-semibold">
-                        {`${timeMin}-${timeMax} ${t("detailscardtimelabel")}`}
+                        <TimeDesc timeMin={timeMin} timeMax={timeMax}/>
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -90,4 +90,28 @@ export default function Card(
             </div>
         </div>
     );
+}
+
+function TimeDesc({timeMin, timeMax}: {timeMin: number; timeMax: number}) {
+    const { t } = useTranslation();
+
+    if(timeMin > 90) {
+        return (`${t("detailscardtimelong")}`);
+    }
+    else if(timeMin === 0 && timeMax === 0) {
+        return (`${t("detailscardtimelready")}`);
+    }
+    else if(timeMax == 0) {
+        return (`${timeMin} ${t("detailscardtimelabel")}`);
+    }
+    return (`${timeMin}-${timeMax} ${t("detailscardtimelabel")}`);
+}
+
+function ProfitDesc({profitMin, profitMax}: {profitMin: number; profitMax: number}) {
+    const { t } = useTranslation();
+
+    if(profitMax == 0) {
+        return (`${profitMin}% ${t("detailscardprofitlabel")}`);
+    }
+    return (`${profitMin}-${profitMax}% ${t("detailscardprofitlabel")}`);
 }

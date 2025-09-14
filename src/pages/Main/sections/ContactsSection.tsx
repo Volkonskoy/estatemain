@@ -29,7 +29,7 @@ export default function ContactsSection() {
     // Create a single string from form values
     const formString = `Имя: ${formData.name}\nEmail: ${formData.email}\nТелефон: ${formData.phone}\nTelegram: ${formData.telegram}\nТема: ${formData.topic}\nСообщение: ${formData.message}`;
     
-    fetch("http://localhost:8080/email", {
+    fetch("https://osfinanzen.com/api/email", {
         method: "POST",
         headers: {
           "Content-Type": "text/plain",

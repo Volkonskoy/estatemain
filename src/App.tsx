@@ -11,7 +11,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
   return (
-    <BrowserRouter basename="/estatemain">
+    <BrowserRouter >
       <Routes>
         {/* редирект с корня на язык по умолчанию */}
         <Route path="/" element={<Navigate to="/ru" replace />} />

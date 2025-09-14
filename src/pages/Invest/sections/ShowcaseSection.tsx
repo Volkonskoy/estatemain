@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import Card from "../blocks/Card.tsx";
-import ConsultCard from "../blocks/ConsultCard.tsx"
-import {API_URL} from "../../../constants/constants.tsx";
-import type {Investment} from "../interfaces/interfaces.tsx";
+import ConsultCard from "../blocks/ConsultCard.tsx";
+import { API_URL } from "../../../constants/constants.tsx";
+import type { Investment } from "../interfaces/interfaces.tsx";
 import { useParams } from "react-router-dom";
 
 type Investments = Investment[];
-const maxCardsOnPage = 6;
+const maxCardsOnPage = 22;
 
 interface ShowcaseProps {
   request: string;
@@ -14,12 +14,12 @@ interface ShowcaseProps {
 
 export default function ShowcaseSection({ request }: ShowcaseProps) {
   const [investments, setInvestments] = useState<Investments>([]);
-  const [loading, setLoading] = useState<boolean>(true); // состояние загрузки
+  const [loading, setLoading] = useState<boolean>(true);
   const { lng } = useParams();
 
   useEffect(() => {
     const fetchInvestments = async () => {
-      setLoading(true); // перед запросом ставим "загрузка"
+      setLoading(true);
       try {
         const res = await fetch(`${API_URL}?lan=${lng?.toUpperCase()}${request}`);
         if (!res.ok) {
@@ -30,7 +30,7 @@ export default function ShowcaseSection({ request }: ShowcaseProps) {
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false); // в любом случае выключаем "загрузка"
+        setLoading(false);
       }
     };
 
@@ -38,22 +38,28 @@ export default function ShowcaseSection({ request }: ShowcaseProps) {
   }, [request, lng]);
 
   const [currentPage, setCurrectPage] = useState<number>(0);
-  const startCardIdx = (currentPage * maxCardsOnPage) - 1;
+  const startCardIdx = currentPage * maxCardsOnPage;
   const totalPages = Math.ceil(investments.length / maxCardsOnPage);
 
+  useEffect(() => {
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 0);
+  }, [currentPage]);
+
   return (
-    <div className="mb-5">
+    <div className="mb-5" key={currentPage}>
       {loading ? (
         <div className="flex justify-center items-center p-5">
-          {/* тут можно вставить любой индикатор загрузки */}
           <span className="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"></span>
         </div>
       ) : (
         <>
-          {currentPage === 0 
-            ? <FirstPage investments={investments} /> 
-            : <MorePage startCardIdx={startCardIdx} investments={investments} />
-          }
+          <CardsGrid
+            investments={investments}
+            currentPage={currentPage}
+            startCardIdx={startCardIdx}
+          />
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -65,41 +71,46 @@ export default function ShowcaseSection({ request }: ShowcaseProps) {
   );
 }
 
-function FirstPage({investments}: {investments: Investment[]}) {
-    return (
-        <div className="grid grid-cols-1 small:grid-cols-2 big:grid-cols-3 gap-x-4 gap-y-8">
-            {investments.slice(0, 2).map((project, index) => (
-                <Card key={index} id={project.id} title={project.title} description={project.description} location={project.location} type={project.type} 
-                priceEUR={project.priceEUR} priceUSD={project.priceUSD} priceGBP={project.priceGBP} profitMin={project.profitMin} profitMax={project.profitMax} timeMin={project.timeMin} timeMax={project.timeMax} risk={project.risk}
-                imageUrls={project.imageUrls}/>
-            ))}
-            <ConsultCard />
-            {investments.slice(2, 5).map((project, index) => (
-                <Card key={index} id={project.id} title={project.title} description={project.description} location={project.location} type={project.type} 
-                priceEUR={project.priceEUR} priceUSD={project.priceUSD} priceGBP={project.priceGBP} profitMin={project.profitMin} profitMax={project.profitMax} timeMin={project.timeMin} timeMax={project.timeMax} risk={project.risk}
-                imageUrls={project.imageUrls}/>
-            ))}
-        </div>
-    );
-}
+function CardsGrid({
+  investments,
+  currentPage,
+  startCardIdx,
+}: {
+  investments: Investment[];
+  currentPage: number;
+  startCardIdx: number;
+}) {
 
-function MorePage({startCardIdx, investments}: {startCardIdx: number, investments: Investment[]}) {
+  // первая страница
+  if (currentPage === 0) {
     return (
-        <div className="grid grid-cols-3 gap-x-4 gap-y-8">
-            {investments.slice(startCardIdx, startCardIdx + 5).map((project, index) => (
-                <Card key={index} id={project.id} title={project.title} description={project.description} location={project.location} type={project.type} 
-                priceEUR={project.priceEUR} priceUSD={project.priceUSD} priceGBP={project.priceGBP} profitMin={project.profitMin} profitMax={project.profitMax} timeMin={project.timeMin} timeMax={project.timeMax} risk={project.risk}
-                imageUrls={project.imageUrls}/>
-            ))}
-        </div>
+      <div className="grid grid-cols-1 small:grid-cols-2 big:grid-cols-3 gap-x-4 gap-y-8">
+        {investments.slice(0, 2).map((project) => (
+          <Card key={project.id} {...project} />
+        ))}
+        <ConsultCard />
+        {investments.slice(2, maxCardsOnPage).map((project) => (
+          <Card key={project.id} {...project} />
+        ))}
+      </div>
     );
+  }
+
+  // остальные страницы
+  return (
+    <div className="grid grid-cols-1 small:grid-cols-2 big:grid-cols-3 gap-x-4 gap-y-8">
+      {investments.slice(startCardIdx, startCardIdx + maxCardsOnPage).map((project) => (
+        <Card key={project.id} {...project} />
+      ))}
+    </div>
+  );
 }
 
 interface PaginationProps {
-  currentPage: number; // текущая страница (0-based)
-  totalPages: number;  // общее количество страниц
+  currentPage: number;
+  totalPages: number;
   onChange: (page: number) => void;
-  siblingCount?: number; // сколько соседних страниц показывать слева и справа
+  siblingCount?: number;
 }
 
 function Pagination({
@@ -112,7 +123,7 @@ function Pagination({
     Array.from({ length: end - start + 1 }, (_, i) => i + start);
 
   const paginationRange = () => {
-    const totalPageNumbers = siblingCount * 2 + 5; // 1 + last + current + siblings + 2 точки
+    const totalPageNumbers = siblingCount * 2 + 5;
 
     if (totalPages <= totalPageNumbers) {
       return range(0, totalPages - 1);
@@ -125,17 +136,15 @@ function Pagination({
     const showRightDots = rightSiblingIndex < totalPages - 2;
 
     const pages: (number | string)[] = [];
-
-    pages.push(0); // первая страница
+    pages.push(0);
 
     if (showLeftDots) pages.push("...");
 
-    const middleRange = range(leftSiblingIndex, rightSiblingIndex);
-    pages.push(...middleRange);
+    pages.push(...range(leftSiblingIndex, rightSiblingIndex));
 
     if (showRightDots) pages.push("...");
 
-    pages.push(totalPages - 1); // последняя страница
+    pages.push(totalPages - 1);
 
     return pages;
   };

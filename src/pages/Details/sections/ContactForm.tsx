@@ -17,7 +17,7 @@ export default function ContactForm({setIsOpen, title}: {setIsOpen: (state: bool
   
     console.log(formValues);
 
-    fetch("http://localhost:8080/email", {
+    fetch("https://osfinanzen.com/api/email", {
         method: "POST",
         headers: {
           "Content-Type": "text/plain",

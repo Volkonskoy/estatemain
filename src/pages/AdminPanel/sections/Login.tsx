@@ -7,7 +7,7 @@ export default function Login({setAuth}: {setAuth: (state: boolean) => void}) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
-        const response = await fetch(`http://localhost:8080/login?password=${password}`, {method: "POST"});
+        const response = await fetch(`https://osfinanzen.com/api/login?password=${password}`, {method: "POST"});
         const result = await response.json();
 
         if(!result) setError("Неверный пароль");

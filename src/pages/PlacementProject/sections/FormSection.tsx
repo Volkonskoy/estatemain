@@ -49,7 +49,7 @@ function Form() {
         // Log the form string
         console.log(formString);
 
-        fetch("http://localhost:8080/email", {
+        fetch("https://osfinanzen.com/api/email", {
         method: "POST",
         headers: {
           "Content-Type": "text/plain",

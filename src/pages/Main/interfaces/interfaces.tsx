@@ -13,5 +13,5 @@ export interface Investment {
   timeMin: number;
   timeMax: number;
   risk: string;
-  imageUrls: [];
+  imageUrls: string[];
 }

@@ -130,7 +130,7 @@ export default function EditForm() {
 
   const fetchHouse = async () => {
     try {
-      const response = await fetch("http://localhost:8080/houses/" + id, { method: "GET" });
+      const response = await fetch("https://osfinanzen.com/api/houses/" + id, { method: "GET" });
       if (!response.ok) throw new Error("Ошибка загрузки проекта");
 
       const data = await response.json();
@@ -241,7 +241,7 @@ const handleSubmit = async (e: FormEvent) => {
       videoUrls: project.youtubeLinks.filter(Boolean),
     };
 
-    const updateResponse = await fetch("http://localhost:8080/houses/" + id, {
+    const updateResponse = await fetch("https://osfinanzen.com/api/houses/" + id, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -257,7 +257,7 @@ const handleSubmit = async (e: FormEvent) => {
     if (project.images.length > 0) {
       const formData = new FormData();
       project.images.forEach(file => formData.append("images", file));
-      const imagesResponse = await fetch(`http://localhost:8080/images/${projectId}`, {
+      const imagesResponse = await fetch(`https://osfinanzen.com/api/images/${projectId}`, {
         method: "POST",
         body: formData,
       });
@@ -274,7 +274,7 @@ const handleSubmit = async (e: FormEvent) => {
 
 async function DelProject() {
   try {
-    const deleteResponse = await fetch("http://localhost:8080/houses/" + id, {
+    const deleteResponse = await fetch("https://osfinanzen.com/api/houses/" + id, {
       method: "DELETE",
     });
 

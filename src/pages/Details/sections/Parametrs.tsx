@@ -42,7 +42,7 @@ export default function Parametrs({setIsOpen, location, type, priceEUR, priceUSD
                 <span className="text-gray-700 font-medium">{t("detailscardprofit")}</span>
                 </div>
                 <div className="text-blue-600 font-semibold">
-                    {profitMin}%–{profitMax}% {t("detailscardprofitlabel")}
+                    <ProfitDesc profitMin={profitMin} profitMax={profitMax}/>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -50,7 +50,7 @@ export default function Parametrs({setIsOpen, location, type, priceEUR, priceUSD
                 <span className="text-gray-700 font-medium">{t("detailscardtime")}</span>
                 </div>
                 <div className="text-gray-900 font-semibold">
-                    {timeMin}–{timeMax} {t("detailscardpropstimelabel")}
+                    <TimeDesc timeMin={timeMin} timeMax={timeMax}/>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -69,4 +69,28 @@ export default function Parametrs({setIsOpen, location, type, priceEUR, priceUSD
             </button>
         </div>
     );
+}
+
+function TimeDesc({timeMin, timeMax}: {timeMin: number; timeMax: number}) {
+    const { t } = useTranslation();
+
+    if(timeMin > 90) {
+        return (`${t("detailscardtimelong")}`);
+    }
+    else if(timeMin === 0 && timeMax === 0) {
+        return (`${t("detailscardtimelready")}`);
+    }
+    else if(timeMax == 0) {
+        return (`${timeMin} ${t("detailscardtimelabel")}`);
+    }
+    return (`${timeMin}-${timeMax} ${t("detailscardtimelabel")}`);
+}
+
+function ProfitDesc({profitMin, profitMax}: {profitMin: number; profitMax: number}) {
+    const { t } = useTranslation();
+
+    if(profitMax == 0) {
+        return (`${profitMin}% ${t("detailscardprofitlabel")}`);
+    }
+    return (`${profitMin}-${profitMax}% ${t("detailscardprofitlabel")}`);
 }

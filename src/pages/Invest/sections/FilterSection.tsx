@@ -106,6 +106,11 @@ export default function FilterSection({request, setRequest}: FilterProps) {
           <option>{t("investfilterregion7")}</option>
           <option>{t("investfilterregion8")}</option>
           <option>{t("investfilterregion9")}</option>
+          <option>{t("investfilterregion10")}</option>
+          <option>{t("investfilterregion11")}</option>
+          <option>{t("investfilterregion12")}</option>
+          <option>{t("investfilterregion13")}</option>
+          <option>{t("investfilterregion14")}</option>
         </select>
 
         <div className="flex items-center gap-2">

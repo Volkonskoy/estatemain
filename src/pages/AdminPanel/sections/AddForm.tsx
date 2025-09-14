@@ -168,7 +168,7 @@ export default function AddForm() {
         videoUrls: project.youtubeLinks.filter(Boolean),
       };
 
-      const createResponse = await fetch("http://localhost:8080/houses", {
+      const createResponse = await fetch("https://osfinanzen.com/api/houses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -182,7 +182,7 @@ export default function AddForm() {
       if (project.images.length > 0) {
         const formData = new FormData();
         project.images.forEach(file => formData.append("images", file));
-        const imagesResponse = await fetch(`http://localhost:8080/images/${projectId}`, {
+        const imagesResponse = await fetch(`https://osfinanzen.com/api/images/${projectId}`, {
           method: "POST",
           body: formData,
         });
@@ -320,7 +320,6 @@ export default function AddForm() {
           <div className="flex-1">
             <label className="block font-medium mb-1">до (%)</label>
             <input
-              required
               type="number"
               value={project.profitability.to}
               onChange={(e) => handleChange(e, "profitability.to")}
@@ -344,7 +343,6 @@ export default function AddForm() {
           <div className="flex-1">
             <label className="block font-medium mb-1">до (мес.)</label>
             <input
-              required
               type="number"
               value={project.duration.to}
               onChange={(e) => handleChange(e, "duration.to")}

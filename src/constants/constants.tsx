@@ -1,1 +1,1 @@
-export const API_URL = "http://localhost:8080/houses";
+export const API_URL = "https://osfinanzen.com/api/houses";

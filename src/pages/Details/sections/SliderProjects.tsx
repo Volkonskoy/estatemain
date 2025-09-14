@@ -3,24 +3,18 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
 import { Navigation, Pagination, Thumbs } from "swiper/modules";
 import SwiperClass from "swiper";
-import "./SliderProjects.css";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
 import type { SliderProps } from "../interfaces/interfaces";
 
-const materials = {
-    photos: [
-        "images/ShowcaseSection/house-example.jpg",
-        "images/ShowcaseSection/house-example.jpg",
-        "images/ShowcaseSection/house-example.jpg",
-    ],
-    videos: [
-        "https://www.youtube.com/watch?v=KMQ7_Hk5rVY",
-        "https://www.youtube.com/watch?v=KMQ7_Hk5rVY"
-    ],
-};
-
-export default function SliderProjects({imageUrls, videoUrls}: SliderProps) {
+export default function SliderProjects({ imageUrls, videoUrls }: SliderProps) {
     const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
-    const slides = [...materials.photos, ...materials.videos];
+    const [lightboxOpen, setLightboxOpen] = useState(false);
+    const [lightboxIndex, setLightboxIndex] = useState(0);
+
+    const slides = [...imageUrls, ...videoUrls];
 
     return (
         <div className="mb-[30px]">
@@ -38,9 +32,13 @@ export default function SliderProjects({imageUrls, videoUrls}: SliderProps) {
                     <SwiperSlide key={`photo-${index}`}>
                         <div className="w-full h-[300px] phone:h-[400px] small:h-[500px] flex justify-center items-center overflow-hidden bg-black">
                             <img
-                                src={`http://localhost:8080/images/${photo}`}
+                                src={`https://osfinanzen.com/api/images/${photo}`}
                                 alt={`Project Photo ${index + 1}`}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover cursor-pointer"
+                                onClick={() => {
+                                    setLightboxIndex(index);
+                                    setLightboxOpen(true);
+                                }}
                             />
                         </div>
                     </SwiperSlide>
@@ -77,9 +75,13 @@ export default function SliderProjects({imageUrls, videoUrls}: SliderProps) {
                 {imageUrls.map((photo, index) => (
                     <SwiperSlide key={`thumb-photo-${index}`} className="cursor-pointer border-2 border-transparent">
                         <img
-                            src={`http://localhost:8080/images/${photo}`}
+                            src={`https://osfinanzen.com/api/images/${photo}`}
                             alt={`Thumb ${index + 1}`}
                             className="w-full h-full object-cover"
+                            onClick={() => {
+                                setLightboxIndex(index);
+                                setLightboxOpen(true);
+                            }}
                         />
                     </SwiperSlide>
                 ))}
@@ -97,6 +99,18 @@ export default function SliderProjects({imageUrls, videoUrls}: SliderProps) {
                     );
                 })}
             </Swiper>
+
+            {/* Lightbox для изображений */}
+            <Lightbox
+                open={lightboxOpen}
+                close={() => setLightboxOpen(false)}
+                slides={imageUrls.map((img) => ({ src: `https://osfinanzen.com/api/images/${img}` }))}
+                index={lightboxIndex}
+                plugins={[Thumbnails]}
+                on={{
+                    view: (slide) => setLightboxIndex(slide.index),
+                }}
+            />
         </div>
     );
 }
